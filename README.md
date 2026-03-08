@@ -60,6 +60,8 @@ python3 -m http.server
 
 ## Architecture
 
+![Architecture](docs/architecture.svg)
+
 ```
 snippets-site/
 ├── index.html           # HTML shell with search, filters, grid, suggest modal
