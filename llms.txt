@@ -1,0 +1,12 @@
+# Snippets
+
+> Curated shell commands and code snippets, search and copy
+
+- Live: https://snippets.neorgon.com/
+- Part of the Neorgon tool suite (free, no signup, runs in your browser): https://neorgon.com/
+- Keywords: snippets, shell, search, copy
+
+## More Neorgon tools
+
+- [Neorgon hub](https://neorgon.com/): Browse and launch every tool from one page.
+- [Full suite index](https://neorgon.com/llms.txt): Machine-readable list of every Neorgon tool.
