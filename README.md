@@ -30,7 +30,9 @@ Curated shell commands and code snippets. Search and copy, skip the chat.
 
 ## Overview
 
-Browse a curated collection of shell commands and code snippets for macOS, bash, data extraction, text processing, Git, Docker, Kubernetes, and more. Search by keyword, filter by category, platform, or tags, and copy what you need in one click.
+255 curated commands for bash, macOS, Windows PowerShell, Git, data extraction, text processing, media tooling, Docker, Kubernetes and Claude Code. Search across every field, filter by category, platform or tag, pin the ones you reach for, and copy in one click.
+
+Built for the moment you know the command exists but not its exact flags — faster than a search engine, and it never invents a flag that does not exist.
 
 **Live:** snippets.neorgon.com
 
@@ -38,13 +40,14 @@ Browse a curated collection of shell commands and code snippets for macOS, bash,
 
 ## Features
 
-- **Instant search** -- filter snippets by title, command, keyword, or description
-- **Category filters** -- 10 categories: Shell, macOS, Data, Text, Git, Config, Docker, K8s, DevOps, Claude Code
-- **Platform and tag dropdowns** -- narrow results with multi-select tag filters and searchable dropdown menus
-- **One-click copy** -- copy any command to clipboard with visual confirmation
-- **Expandable code blocks** -- long snippets collapse with an expand toggle
-- **Suggest a snippet** -- modal form to compose and copy a suggestion for new entries
-- **Keyboard shortcuts** -- `/` focuses search, `Escape` clears
+- **Instant search** -- multi-term matching across title, description, command, tags and platform, with matches highlighted
+- **Category rail** -- 13 categories with live counts that update as you filter
+- **Pinned snippets** -- star the ones you use constantly; they sort to the top and persist on your device
+- **Shareable URLs** -- every filter lives in the URL hash, so `#q=amend+author&cat=git` is a bookmark
+- **Keyboard driven** -- `/` search, `j`/`k` move, `Enter`/`c` copy, `p` pin, `?` shortcuts
+- **Platform and tag dropdowns** -- multi-select tags, searchable menus, one-click removal via filter chips
+- **Expandable code blocks** -- snippets over 12 lines collapse with an expand toggle
+- **Suggest a snippet** -- modal form that composes a suggestion and copies it to your clipboard
 
 ---
 
@@ -53,7 +56,7 @@ Browse a curated collection of shell commands and code snippets for macOS, bash,
 ES modules require an HTTP server (not `file://`):
 
 ```bash
-python3 -m http.server
+make serve
 ```
 
 ---
@@ -64,21 +67,35 @@ python3 -m http.server
 
 ```
 snippets-site/
-├── index.html           # HTML shell with search, filters, grid, suggest modal
+├── index.html           # HTML shell: sticky toolbar, rail, grid, modals
 ├── css/
 │   └── style.css        # All styles, category accent colors, responsive grid
 ├── js/
-│   ├── app.js           # Entry point, wires render + events
-│   ├── data.js          # Static snippet collection, categories, labels
-│   ├── state.js         # Filter state, search term tracking
-│   ├── render.js        # Card rendering, dropdown population, filtering
-│   ├── events.js        # Search, dropdown, copy, keyboard, suggest modal
-│   └── utils.js         # escHtml, showToast, debounce
-├── og-preview.png       # 1200x630 social preview image
+│   ├── app.js           # Entry point, wires state + render + events
+│   ├── data.js          # Aggregates js/snippets/*, exports CATEGORIES + labels
+│   ├── snippets/        # One module per category (shell.js, windows.js, git.js, ...)
+│   ├── state.js         # Filters, pins, URL hash and localStorage persistence
+│   ├── render.js        # Rail, dropdowns, filter chips, cards, focus ring
+│   ├── events.js        # Search, filters, copy, pin, keyboard, modals
+│   └── utils.js         # escHtml, highlight, showToast, debounce
+├── og-preview.jpg       # 1200x630 social preview image
 ├── robots.txt           # Search engine access rules
 ├── sitemap.xml          # Search engine sitemap
 └── CNAME                # snippets.neorgon.com
 ```
+
+### Adding a snippet
+
+Append to the matching `js/snippets/<category>.js` array:
+
+```js
+{ id, title, description, command, platform, tags[], category }
+```
+
+`id` must be unique across every module. Use `` String.raw`…` `` for any command
+containing backslashes (Windows paths, regex classes, line continuations) — a plain
+template literal silently eats them. Use a normal template with `\${` for bash
+parameter expansion, since `String.raw` still interpolates `${`.
 
 ---
 

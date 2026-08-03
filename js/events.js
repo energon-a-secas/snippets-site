@@ -1,154 +1,211 @@
 // ── Event handlers ───────────────────────────────────────────
 
-import { state } from './state.js';
-import { renderSnippets, renderDropdowns, filterDropdownItems } from './render.js';
+import { state, togglePin, resetFilters, syncHash, readHash } from './state.js';
+import {
+  render, renderRail, renderSnippets, renderDropdowns, renderActiveFilters,
+  filterDropdownItems, updateFocus, getVisible,
+} from './render.js';
 import { $, showToast, debounce } from './utils.js';
+
+const TYPING_TAGS = ['INPUT', 'TEXTAREA'];
+
+/** Re-renders everything that a filter change can affect, then syncs the URL. */
+function applyFilters() {
+  renderRail();
+  renderDropdowns();
+  renderActiveFilters();
+  renderSnippets();
+  syncHash();
+}
 
 function closeAllDropdowns(except) {
   document.querySelectorAll('.dropdown.open').forEach(dd => {
-    if (dd !== except) {
-      dd.classList.remove('open');
-      dd.querySelector('.dropdown-toggle').setAttribute('aria-expanded', 'false');
-      const search = dd.querySelector('.dd-search');
-      if (search) { search.value = ''; }
-    }
-  });
-}
-
-function openDropdown(dd) {
-  const wasOpen = dd.classList.contains('open');
-  if (wasOpen) {
+    if (dd === except) return;
     dd.classList.remove('open');
     dd.querySelector('.dropdown-toggle').setAttribute('aria-expanded', 'false');
     const search = dd.querySelector('.dd-search');
     if (search) search.value = '';
-    return;
-  }
+  });
+}
+
+function toggleDropdown(dd) {
+  const wasOpen = dd.classList.contains('open');
+  closeAllDropdowns();
+  if (wasOpen) return;
   dd.classList.add('open');
   dd.querySelector('.dropdown-toggle').setAttribute('aria-expanded', 'true');
-  closeAllDropdowns(dd);
   const search = dd.querySelector('.dd-search');
   if (search) requestAnimationFrame(() => search.focus());
 }
 
+function closeModals() {
+  document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+}
+
+function copySnippet(card) {
+  const code = card.querySelector('.snippet-code code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    showToast('Copied to clipboard');
+    const btn = card.querySelector('.copy-btn');
+    btn.classList.add('copied');
+    setTimeout(() => btn.classList.remove('copied'), 1200);
+  }).catch(() => showToast('Could not access the clipboard'));
+}
+
+function pinSnippet(card) {
+  const id = card.dataset.id;
+  const nowPinned = togglePin(id);
+  state.focusId = id;
+  showToast(nowPinned ? 'Pinned to the top' : 'Unpinned');
+  renderRail();
+  renderSnippets();
+  updateFocus({ scroll: true });
+}
+
+function toggleTag(tag) {
+  const at = state.activeTags.indexOf(tag);
+  if (at === -1) state.activeTags.push(tag);
+  else state.activeTags.splice(at, 1);
+  applyFilters();
+}
+
+// ── Keyboard focus movement ──────────────────────────────────
+
+function moveFocus(delta) {
+  const list = getVisible();
+  if (!list.length) return;
+  const current = list.findIndex(s => s.id === state.focusId);
+  const next = current === -1
+    ? (delta > 0 ? 0 : list.length - 1)
+    : Math.min(list.length - 1, Math.max(0, current + delta));
+  state.focusId = list[next].id;
+  updateFocus({ scroll: true });
+}
+
+function focusedCard() {
+  if (!state.focusId) return null;
+  return $('snippets-grid').querySelector(`.snippet-card[data-id="${CSS.escape(state.focusId)}"]`);
+}
+
+// ── Bindings ─────────────────────────────────────────────────
+
 export function bindEvents() {
-  // ── Search ──────────────────────────────────────────────────
   $('search-input').addEventListener('input', debounce(e => {
     state.searchQuery = e.target.value.trim();
+    renderRail();
+    renderActiveFilters();
     renderSnippets();
+    syncHash();
   }, 150));
 
-  // ── Clear all filters ──────────────────────────────────────
   $('clear-search').addEventListener('click', () => {
+    resetFilters();
     $('search-input').value = '';
-    state.searchQuery = '';
-    state.activeCategory = '';
-    state.activePlatform = '';
-    state.activeTags = [];
-    renderDropdowns();
-    renderSnippets();
+    applyFilters();
   });
 
-  // ── Dropdown toggles ──────────────────────────────────────
+  // ── Category rail ─────────────────────────────────────────
+  $('cat-rail').addEventListener('click', e => {
+    const chip = e.target.closest('.rail-chip');
+    if (!chip) return;
+    if (chip.dataset.pinned) {
+      state.pinnedOnly = !state.pinnedOnly;
+    } else {
+      state.activeCategory = chip.dataset.cat;
+      if (!chip.dataset.cat) state.pinnedOnly = false;
+    }
+    applyFilters();
+  });
+
+  // ── Removable filter chips ────────────────────────────────
+  $('active-filters').addEventListener('click', e => {
+    const chip = e.target.closest('.filter-chip');
+    if (!chip) return;
+    switch (chip.dataset.kind) {
+      case 'search': state.searchQuery = ''; $('search-input').value = ''; break;
+      case 'category': state.activeCategory = ''; break;
+      case 'platform': state.activePlatform = ''; break;
+      case 'pinned': state.pinnedOnly = false; break;
+      case 'tag': state.activeTags = state.activeTags.filter(t => t !== chip.dataset.value); break;
+      case 'all': resetFilters(); $('search-input').value = ''; break;
+    }
+    applyFilters();
+  });
+
+  // ── Dropdowns ─────────────────────────────────────────────
   document.querySelectorAll('.dropdown-toggle').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      openDropdown(btn.closest('.dropdown'));
+      toggleDropdown(btn.closest('.dropdown'));
     });
   });
 
-  // ── Dropdown search inputs ────────────────────────────────
   document.addEventListener('input', e => {
-    if (!e.target.classList.contains('dd-search')) return;
-    filterDropdownItems(e.target.id);
+    if (e.target.classList.contains('dd-search')) filterDropdownItems(e.target.id);
   });
 
   document.addEventListener('click', e => {
-    if (e.target.classList.contains('dd-search')) {
-      e.stopPropagation();
-      return;
-    }
-    if (e.target.closest('.dd-search-wrap')) {
-      e.stopPropagation();
-      return;
-    }
+    if (e.target.closest('.dd-search-wrap')) e.stopPropagation();
   }, true);
 
-  // ── Category selection ────────────────────────────────────
-  $('dd-category-menu').addEventListener('click', e => {
-    const item = e.target.closest('.dropdown-item');
-    if (!item) return;
-    state.activeCategory = item.dataset.value;
-    $('dd-category').classList.remove('open');
-    $('dd-category').querySelector('.dropdown-toggle').setAttribute('aria-expanded', 'false');
-    renderDropdowns();
-    renderSnippets();
-  });
-
-  // ── Platform selection ────────────────────────────────────
   $('dd-platform-menu').addEventListener('click', e => {
     const item = e.target.closest('.dropdown-item');
     if (!item) return;
     state.activePlatform = item.dataset.value;
-    $('dd-platform').classList.remove('open');
-    $('dd-platform').querySelector('.dropdown-toggle').setAttribute('aria-expanded', 'false');
-    renderDropdowns();
-    renderSnippets();
+    closeAllDropdowns();
+    applyFilters();
   });
 
-  // ── Tags multi-select ─────────────────────────────────────
   $('dd-tags-menu').addEventListener('click', e => {
     const item = e.target.closest('.dropdown-item');
     if (!item) return;
     e.stopPropagation();
-    const tag = item.dataset.value;
-    const idx = state.activeTags.indexOf(tag);
-    if (idx === -1) {
-      state.activeTags.push(tag);
-    } else {
-      state.activeTags.splice(idx, 1);
-    }
-    renderDropdowns();
-    renderSnippets();
+    toggleTag(item.dataset.value);
   });
 
-  // ── Close dropdowns on outside click ──────────────────────
   document.addEventListener('click', e => {
-    if (!e.target.closest('.dropdown')) {
-      closeAllDropdowns();
-    }
+    if (!e.target.closest('.dropdown')) closeAllDropdowns();
   });
 
-  // ── Snippet grid: copy + expand ───────────────────────────
+  // ── Snippet grid ──────────────────────────────────────────
   $('snippets-grid').addEventListener('click', e => {
-    const copyBtn = e.target.closest('.copy-btn');
-    if (copyBtn) {
-      const card = copyBtn.closest('.snippet-card');
-      const code = card.querySelector('.snippet-code code').textContent;
-      navigator.clipboard.writeText(code).then(() => {
-        showToast('Copied to clipboard');
-        copyBtn.classList.add('copied');
-        setTimeout(() => copyBtn.classList.remove('copied'), 1200);
-      });
+    if (e.target.closest('[data-action="reset-filters"]')) {
+      resetFilters();
+      $('search-input').value = '';
+      applyFilters();
       return;
     }
 
+    const tagBtn = e.target.closest('.snippet-tag');
+    if (tagBtn) { toggleTag(tagBtn.dataset.tag); return; }
+
+    const card = e.target.closest('.snippet-card');
+    if (!card) return;
+
+    if (e.target.closest('.copy-btn')) { copySnippet(card); return; }
+    if (e.target.closest('.pin-btn')) { pinSnippet(card); return; }
+
     const expandBtn = e.target.closest('.expand-btn');
     if (expandBtn) {
-      const card = expandBtn.closest('.snippet-card');
       const isExpanded = card.classList.toggle('expanded');
       expandBtn.textContent = isExpanded ? 'Collapse' : `Show all ${expandBtn.dataset.lines} lines`;
       return;
     }
+
+    state.focusId = card.dataset.id;
+    updateFocus();
   });
 
-  // ── Suggest modal ─────────────────────────────────────────
-  $('suggest-btn').addEventListener('click', () => {
-    $('suggest-modal').classList.toggle('open');
-  });
+  // ── Modals ────────────────────────────────────────────────
+  $('suggest-btn').addEventListener('click', () => $('suggest-modal').classList.add('open'));
+  $('suggest-close').addEventListener('click', closeModals);
+  $('help-btn').addEventListener('click', () => $('help-modal').classList.add('open'));
+  $('help-close').addEventListener('click', closeModals);
 
-  $('suggest-close').addEventListener('click', () => {
-    $('suggest-modal').classList.remove('open');
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', e => {
+      if (e.target === modal) closeModals();
+    });
   });
 
   $('suggest-copy').addEventListener('click', () => {
@@ -162,22 +219,64 @@ export function bindEvents() {
     const text = `Snippet Suggestion\n\nTitle: ${title}\nCommand: ${command}\nDescription: ${desc}`;
     navigator.clipboard.writeText(text).then(() => {
       showToast('Suggestion copied, share it with us');
-      $('suggest-modal').classList.remove('open');
+      closeModals();
       $('suggest-title').value = '';
       $('suggest-command').value = '';
       $('suggest-desc').value = '';
     });
   });
 
+  // ── Back/forward and pasted deep links ────────────────────
+  window.addEventListener('hashchange', () => {
+    readHash();
+    $('search-input').value = state.searchQuery;
+    render();
+  });
+
   // ── Keyboard shortcuts ────────────────────────────────────
   document.addEventListener('keydown', e => {
+    const typing = TYPING_TAGS.includes(document.activeElement.tagName);
+
     if (e.key === 'Escape') {
       closeAllDropdowns();
-      $('suggest-modal').classList.remove('open');
+      closeModals();
+      if (typing) document.activeElement.blur();
+      return;
     }
-    if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (document.querySelector('.modal.open')) return;
+
+    // Layouts differ on whether Shift+/ reports '?' or '/', so check both.
+    if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+      if (typing) return;
+      e.preventDefault();
+      $('help-modal').classList.add('open');
+      return;
+    }
+
+    if (e.key === '/' && !typing) {
       e.preventDefault();
       $('search-input').focus();
+      $('search-input').select();
+      return;
+    }
+
+    if (typing) return;
+
+    switch (e.key) {
+      case 'j': case 'ArrowDown': e.preventDefault(); moveFocus(1); break;
+      case 'k': case 'ArrowUp': e.preventDefault(); moveFocus(-1); break;
+      case 'c': case 'Enter': {
+        const card = focusedCard();
+        if (card) { e.preventDefault(); copySnippet(card); }
+        break;
+      }
+      case 'p': {
+        const card = focusedCard();
+        if (card) { e.preventDefault(); pinSnippet(card); }
+        break;
+      }
     }
   });
 }

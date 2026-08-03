@@ -15,43 +15,74 @@ ES modules require an HTTP server — do not open `index.html` directly via `fil
 
 Static, no-build modular ES module app. No npm, no bundler, no dependencies.
 
-**Data flow:** `data.js` (static array) → `state.js` (filter state object) → `render.js` (DOM updates) ← `events.js` (user interactions)
+**Data flow:** `snippets/*.js` → `data.js` (aggregate) → `state.js` (filters + pins) → `render.js` (DOM) ← `events.js` (interactions)
 
-### Snippet data model (`data.js`)
+### Snippet data (`js/snippets/<category>.js`)
 
-All snippets live in a single exported `snippets` array. Each entry has:
+Each category owns one module exporting an array named after its category key.
+`data.js` imports all of them, concatenates in `CATEGORIES` order, and exports
+`snippets`, `CATEGORIES` and `CATEGORY_LABELS`. Adding a category means: new module,
+plus an import, a `CATEGORIES` entry, a `CATEGORY_LABELS` entry and a `BY_CATEGORY`
+entry in `data.js`, plus a `--cat-<key>` colour and a `[data-cat="<key>"]` rule in
+`css/style.css`.
 
 ```js
 { id, title, description, command, platform, tags[], category }
 ```
 
-`CATEGORIES` is the ordered list of valid category keys. `CATEGORY_LABELS` maps keys to display names. To add a snippet, append to `snippets` with one of the 10 existing category keys (`shell`, `macos`, `data`, `text`, `git`, `config`, `docker`, `k8s`, `devops`, `claude`).
+`id` must be unique across every module (a duplicate silently breaks pins and keyboard focus).
+Current keys: `shell`, `macos`, `windows`, `git`, `data`, `text`, `media`, `config`,
+`devops`, `docker`, `k8s`, `claude`, `ref`. Platforms in use: `bash`, `macOS`,
+`PowerShell`, `Windows`, `Claude Code`, `any`.
 
-### Filtering logic (`render.js`)
+**Escaping — the one real trap.** Commands are template literals, so:
 
-`matchesFilters(snippet)` applies all four active filters simultaneously (search query, category, platform, tags). Tag filter is OR-based: a snippet matches if it has **any** of the selected tags. Search query matches against the concatenated string of title + description + command + tags + platform.
-
-Cards with more than 12 command lines get an expand/collapse toggle (`isLong = lines > 12`).
+- Backslashes (`C:\Users`, `.\app.log`, `\d`, `\;`, shell line continuations) need
+  `` String.raw`…` ``. In a plain template `.\app.log` silently becomes `.app.log`
+  and `\b` becomes a backspace character.
+- Bash parameter expansion (`${VAR%.txt}`) needs a **plain** template with `\${` —
+  `String.raw` does not disable `${}` interpolation.
+- Backticks always terminate the literal, so avoid them (PowerShell line
+  continuation, shell command substitution) — use `$(...)` or one long line instead.
 
 ### State (`state.js`)
 
-Plain exported object — no localStorage, no persistence. All state resets on page reload.
+Filters live in the URL hash (`#q=…&cat=…&plat=…&tags=a,b&pinned=1`) via
+`history.replaceState`, so any view is shareable and back/forward works through the
+`hashchange` listener in `events.js`. Category, platform, tags and the pinned toggle
+*also* persist to `localStorage` (`neo_snippets_filters`) and restore on a fresh
+visit — the free-text query deliberately does not, because a stale search on load is
+disorienting. Pins live separately in `neo_snippets_pins` and are filtered against
+known ids on load, so removing a snippet cannot leave a dangling pin.
 
-```js
-{ searchQuery, activeCategory, activePlatform, activeTags[] }
-```
+### Rendering (`render.js`)
 
-### Dropdowns (`render.js` + `events.js`)
+`matchesExceptCategory()` is the basis for the rail's per-category counts — counts
+reflect every *other* active filter, so a chip showing `0` really would be empty.
+Search is multi-term AND across title + description + command + tags + platform.
 
-Custom dropdowns are re-rendered from scratch on every filter change (`renderDropdowns()`). The search inputs inside each dropdown (`dd-cat-q`, `dd-plat-q`, `dd-tag-q`) use `filterDropdownItems()` which shows/hides `<li>` items client-side without re-rendering. Tags dropdown is multi-select; category and platform are single-select.
+`highlight()` in `utils.js` splits on the term regex and escapes each segment
+*before* wrapping matches in `<mark>` — never escape first and then insert marks, or
+a search for `amp` will corrupt `&amp;`.
 
-### Suggest modal (`events.js`)
+Pinned snippets sort first (stable sort preserves catalogue order within each group).
+Cards over 12 command lines get an expand toggle.
 
-The "Suggest a snippet" modal has no backend. It composes a formatted string and copies it to the clipboard for the user to share manually.
+### Keyboard focus (`events.js`)
 
-### Utilities (`utils.js`)
+`state.focusId` tracks a snippet **id**, not an index, so it survives re-renders;
+`renderSnippets()` clears it if the card is filtered out. `updateFocus()` toggles the
+ring without a full re-render. `--toolbar-h` is published by a `ResizeObserver` in
+`app.js` and feeds `scroll-margin-top`, so keyboard scrolling never parks a card
+under the sticky toolbar.
 
-- `$(id)` — cached `getElementById` wrapper
-- `escHtml` — HTML-escapes all user-facing strings before innerHTML insertion
-- `showToast(msg)` — creates and reuses a single `#app-toast` element; auto-hides after 2 s
-- `debounce(fn, ms)` — used on search input (150 ms delay)
+Shortcuts: `/` search · `j`/`k` or arrows move · `Enter`/`c` copy · `p` pin ·
+`?` shortcuts · `Esc` close. Shift+`/` is accepted alongside `?` because layouts
+disagree on which one they report.
+
+### Shared kits
+
+Header and footer come from `packages/neorgon-ui/` and are vendored here as
+`css/neorgon-header.css`, `css/neorgon-themes.css`, `js/neorgon-header.js`,
+`css/neorgon-footer.css`, `js/neorgon-footer.js`. **Never edit those files** — edit
+the canonical source and re-run `sync-header.sh` / `sync-footer.sh`.
