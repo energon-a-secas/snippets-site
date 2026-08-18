@@ -9,7 +9,7 @@ make serve   # Start dev server at http://localhost:8815
 make kill    # Kill the dev server
 ```
 
-ES modules require an HTTP server — do not open `index.html` directly via `file://`.
+ES modules require an HTTP server: do not open `index.html` directly via `file://`.
 
 ## Architecture
 
@@ -35,15 +35,15 @@ Current keys: `shell`, `macos`, `windows`, `git`, `data`, `text`, `media`, `conf
 `devops`, `docker`, `k8s`, `claude`, `ref`. Platforms in use: `bash`, `macOS`,
 `PowerShell`, `Windows`, `Claude Code`, `any`.
 
-**Escaping — the one real trap.** Commands are template literals, so:
+**Escaping: the one real trap.** Commands are template literals, so:
 
 - Backslashes (`C:\Users`, `.\app.log`, `\d`, `\;`, shell line continuations) need
   `` String.raw`…` ``. In a plain template `.\app.log` silently becomes `.app.log`
   and `\b` becomes a backspace character.
-- Bash parameter expansion (`${VAR%.txt}`) needs a **plain** template with `\${` —
+- Bash parameter expansion (`${VAR%.txt}`) needs a **plain** template with `\${`,
   `String.raw` does not disable `${}` interpolation.
 - Backticks always terminate the literal, so avoid them (PowerShell line
-  continuation, shell command substitution) — use `$(...)` or one long line instead.
+  continuation, shell command substitution), use `$(...)` or one long line instead.
 
 ### State (`state.js`)
 
@@ -51,18 +51,18 @@ Filters live in the URL hash (`#q=…&cat=…&plat=…&tags=a,b&pinned=1`) via
 `history.replaceState`, so any view is shareable and back/forward works through the
 `hashchange` listener in `events.js`. Category, platform, tags and the pinned toggle
 *also* persist to `localStorage` (`neo_snippets_filters`) and restore on a fresh
-visit — the free-text query deliberately does not, because a stale search on load is
+visit: the free-text query deliberately does not, because a stale search on load is
 disorienting. Pins live separately in `neo_snippets_pins` and are filtered against
 known ids on load, so removing a snippet cannot leave a dangling pin.
 
 ### Rendering (`render.js`)
 
-`matchesExceptCategory()` is the basis for the rail's per-category counts — counts
+`matchesExceptCategory()` is the basis for the rail's per-category counts, counts
 reflect every *other* active filter, so a chip showing `0` really would be empty.
 Search is multi-term AND across title + description + command + tags + platform.
 
 `highlight()` in `utils.js` splits on the term regex and escapes each segment
-*before* wrapping matches in `<mark>` — never escape first and then insert marks, or
+*before* wrapping matches in `<mark>`: never escape first and then insert marks, or
 a search for `amp` will corrupt `&amp;`.
 
 Pinned snippets sort first (stable sort preserves catalogue order within each group).
@@ -84,5 +84,5 @@ disagree on which one they report.
 
 Header and footer come from `packages/neorgon-ui/` and are vendored here as
 `css/neorgon-header.css`, `css/neorgon-themes.css`, `js/neorgon-header.js`,
-`css/neorgon-footer.css`, `js/neorgon-footer.js`. **Never edit those files** — edit
+`css/neorgon-footer.css`, `js/neorgon-footer.js`. **Never edit those files**: edit
 the canonical source and re-run `sync-header.sh` / `sync-footer.sh`.
