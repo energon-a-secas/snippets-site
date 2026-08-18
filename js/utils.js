@@ -1,3 +1,12 @@
+// Generic helpers come from the DOM Kit (js/neorgon-dom.js, vendored from
+// packages/neorgon-ui/dom/). They are re-exported so every existing
+// `import { escHtml } from './utils.js'` keeps working.
+//
+// Do not edit js/neorgon-dom.js. Edit the canonical source and run
+// packages/neorgon-ui/sync-dom.sh.
+import { escHtml, debounce, showToast as kitToast } from './neorgon-dom.js';
+export { escHtml, debounce };
+
 // ── Shared utilities ─────────────────────────────────────────
 
 const _els = {};
@@ -5,14 +14,6 @@ export function $(id) {
   return _els[id] || (_els[id] = document.getElementById(id));
 }
 
-export function escHtml(str) {
-  if (str === null || str === undefined) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
 
 export function searchTerms(query) {
   return query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -37,27 +38,10 @@ export function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-let _toastTimer = null;
+/** This site's own toast contract, rendered by the kit. */
 export function showToast(msg) {
-  let el = document.getElementById('app-toast');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'app-toast';
-    el.className = 'toast';
-    el.setAttribute('role', 'status');
-    el.setAttribute('aria-live', 'polite');
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-  el.classList.add('visible');
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => el.classList.remove('visible'), 2000);
+  return kitToast(msg, { id: 'app-toast', className: 'toast',
+    visibleClass: 'visible', duration: 2000 });
 }
 
-export function debounce(fn, ms) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), ms);
-  };
-}
+
