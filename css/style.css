@@ -94,9 +94,13 @@ main#main {
   position: sticky;
   top: var(--header-h, 68px);
   z-index: 90;
+  transition: top .2s ease;
   background: var(--bg);
   border-bottom: 1px solid var(--border-subtle);
 }
+/* Autohide companion: when the kit bar leaves, the toolbar takes the top
+   (the bar and toolbar are not siblings here, so :has() instead of ~). */
+body:has(.header-bar.header-hidden) .toolbar { top: 0; }
 @supports (backdrop-filter: blur(1px)) {
   .toolbar {
     background: color-mix(in srgb, var(--bg) 86%, transparent);
