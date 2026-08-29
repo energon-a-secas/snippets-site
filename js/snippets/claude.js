@@ -3,7 +3,7 @@
 export const claude = [
   {
     id: 'claude-settings-permissions',
-    title: 'settings.json — skip permission prompts',
+    title: 'settings.json: skip permission prompts',
     description: 'Allowlist for common tools so Claude Code stops asking for confirmation on every read, edit, bash, and glob call',
     command: `{
   "permissions": {
@@ -65,35 +65,35 @@ export const claude = [
   {
     id: 'claude-suggested-skills',
     title: 'Useful Claude Code skills to install',
-    description: 'Curated list of /slash skills that extend Claude Code — run each install command to add them',
-    command: `# Commit helper — smart staging + conventional commits
+    description: 'Curated list of /slash skills that extend Claude Code, run each install command to add them',
+    command: `# Commit helper: smart staging + conventional commits
 claude skill install commit-work
 
-# Code review — checks uncommitted changes
+# Code review: checks uncommitted changes
 claude skill install code-review
 
 # SEO & GEO optimization
 claude skill install seo-geo
 
-# Web design review — accessibility + visual audit
+# Web design review: accessibility + visual audit
 claude skill install web-design-reviewer
 
-# Visual verification — screenshot-based testing
+# Visual verification: screenshot-based testing
 claude skill install visual-verification
 
 # Brand voice enforcement
 claude skill install brand-voice
 
-# Interaction design — microinteractions + motion
+# Interaction design: microinteractions + motion
 claude skill install interaction-design
 
-# Web performance — Core Web Vitals + Lighthouse
+# Web performance: Core Web Vitals + Lighthouse
 claude skill install web-perf
 
-# Dependency updater — safe auto-updates
+# Dependency updater: safe auto-updates
 claude skill install dependency-updater
 
-# Marp slides — presentation generator
+# Marp slides: presentation generator
 claude skill install marp-slide`,
     platform: 'Claude Code',
     tags: ['claude', 'skills', 'plugins', 'install'],
@@ -102,7 +102,7 @@ claude skill install marp-slide`,
   {
     id: 'claude-md-starter',
     title: 'CLAUDE.md project starter',
-    description: 'Minimal CLAUDE.md template with sections Claude Code actually uses — drop this in any project root',
+    description: 'Minimal CLAUDE.md template with sections Claude Code actually uses, drop this in any project root',
     command: `# CLAUDE.md
 
 ## Run
@@ -131,7 +131,7 @@ Open in browser, check console for errors.
   {
     id: 'claude-task-prompt',
     title: 'Structured task prompt for Claude Code',
-    description: 'Copy this template when starting a complex task — forces Claude to plan before coding',
+    description: 'Copy this template when starting a complex task, forces Claude to plan before coding',
     command: `/task
 ## Goal
 [One sentence describing the end state]
@@ -156,7 +156,7 @@ Open in browser, check console for errors.
   {
     id: 'claude-api-key-setup',
     title: 'Set up Claude with Anthropic API key',
-    description: 'Configure Claude Code to use a direct Anthropic API token — the simplest auth method',
+    description: 'Configure Claude Code to use a direct Anthropic API token. The simplest auth method',
     command: `# Option 1: Environment variable (add to ~/.zshrc or ~/.bashrc)
 export ANTHROPIC_API_KEY="sk-ant-api03-..."
 
@@ -173,7 +173,7 @@ claude "say hello"`,
   {
     id: 'claude-aws-bedrock',
     title: 'Configure Claude Code with AWS Bedrock',
-    description: 'Use Claude via AWS Bedrock instead of direct API — set credentials, region, and enable Bedrock mode',
+    description: 'Use Claude via AWS Bedrock instead of direct API, set credentials, region, and enable Bedrock mode',
     command: `# 1. Set AWS credentials (if not already configured)
 aws configure
 # Or export directly:
@@ -198,7 +198,7 @@ export AWS_ROLE_ARN="arn:aws:iam::123456789:role/BedrockAccess"
   {
     id: 'claude-vertex-ai',
     title: 'Configure Claude Code with Google Vertex AI',
-    description: 'Use Claude via Google Cloud Vertex AI — authenticate with gcloud and set project',
+    description: 'Use Claude via Google Cloud Vertex AI: authenticate with gcloud and set project',
     command: `# 1. Authenticate with Google Cloud
 gcloud auth application-default login
 
@@ -280,7 +280,7 @@ claude --verbose`,
   {
     id: 'claude-hooks',
     title: 'Claude Code hooks for automation',
-    description: 'Run shell commands automatically before/after Claude takes actions — add to settings.json or .claude/settings.json',
+    description: 'Run shell commands automatically before/after Claude takes actions, add to settings.json or .claude/settings.json',
     command: `{
   "hooks": {
     "PreToolUse": [
@@ -325,7 +325,7 @@ claude --verbose`,
   {
     id: 'claude-claudeignore',
     title: '.claudeignore for excluding files',
-    description: 'Prevent Claude from reading large, sensitive, or irrelevant files — same syntax as .gitignore',
+    description: 'Prevent Claude from reading large, sensitive, or irrelevant files, same syntax as .gitignore',
     command: `# Dependencies
 node_modules/
 vendor/
@@ -362,7 +362,7 @@ logs/
   {
     id: 'claude-api-curl',
     title: 'Call Claude API with curl',
-    description: 'Send a message to the Claude API directly from the terminal — useful for scripting and testing',
+    description: 'Send a message to the Claude API directly from the terminal, useful for scripting and testing',
     command: `curl https://api.anthropic.com/v1/messages \\
   -H "content-type: application/json" \\
   -H "x-api-key: $ANTHROPIC_API_KEY" \\

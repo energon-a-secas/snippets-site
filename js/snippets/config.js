@@ -4,7 +4,7 @@ export const config = [
   {
     id: 'aws-config-view',
     title: 'View current AWS config and identity',
-    description: 'Shows your configured region, account ID, and IAM user/role — verify before running anything destructive',
+    description: 'Shows your configured region, account ID, and IAM user/role, verify before running anything destructive',
     command: `# Who am I?
 aws sts get-caller-identity
 
@@ -20,7 +20,7 @@ aws configure list-profiles`,
   {
     id: 'aws-config-set',
     title: 'Set up AWS CLI profile',
-    description: 'Configures a named AWS profile with region and credentials — avoids polluting the default profile',
+    description: 'Configures a named AWS profile with region and credentials, avoids polluting the default profile',
     command: `# Interactive setup for a named profile
 aws configure --profile my-project
 
@@ -38,7 +38,7 @@ export AWS_PROFILE=my-project`,
   {
     id: 'git-config-identity',
     title: 'Set git user name and email',
-    description: 'Configure your git identity globally or per-repo — essential before your first commit',
+    description: 'Configure your git identity globally or per-repo, essential before your first commit',
     command: `# Global (all repos)
 git config --global user.name "Your Name"
 git config --global user.email "you@example.com"
@@ -81,7 +81,7 @@ git config --global push.default current`,
   {
     id: 'asdf-set-version',
     title: 'Set tool version with asdf (latest syntax)',
-    description: 'Install and set a runtime version with asdf — uses the current "set" command instead of the deprecated "global"',
+    description: 'Install and set a runtime version with asdf, uses the current "set" command instead of the deprecated "global"',
     command: `# List all installable versions of a plugin
 asdf list all nodejs
 
@@ -299,7 +299,7 @@ npm install
 rm -rf node_modules pnpm-lock.yaml && pnpm install
 rm -rf node_modules yarn.lock && yarn install
 
-# Reproduce CI exactly — respects the lockfile, fails if it is out of date
+# Reproduce CI exactly: respects the lockfile, fails if it is out of date
 npm ci
 
 # Find every node_modules eating your disk
@@ -350,7 +350,7 @@ ssh -v user@server 2>&1 | grep -i "offering\\|authentications"`,
   {
     id: 'ssh-proxyjump',
     title: 'Reach a server through a bastion host',
-    description: 'ProxyJump handles the hop for you — no nested ssh commands, and scp works too',
+    description: 'ProxyJump handles the hop for you: no nested ssh commands, and scp works too',
     command: `# ~/.ssh/config
 Host bastion
   HostName bastion.example.com

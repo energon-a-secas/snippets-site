@@ -74,11 +74,11 @@ sed -E 's/([0-9]{4})-([0-9]{2})/\2-\1/' dates.txt`,
 502 Bad Gateway             503 Service Unavailable
 504 Gateway Timeout
 
-# 401 vs 403 — 401 is "I do not know who you are" (send credentials),
+# 401 vs 403: 401 is "I do not know who you are" (send credentials),
 #              403 is "I know who you are, and no" (do not retry with auth)
-# 502 vs 504 — 502 the upstream answered with garbage,
+# 502 vs 504: 502 the upstream answered with garbage,
 #              504 the upstream did not answer in time
-# 429        — read the Retry-After header before retrying`,
+# 429: read the Retry-After header before retrying`,
     platform: 'any',
     tags: ['reference', 'http', 'api', 'status', 'debug'],
     category: 'ref',
@@ -93,7 +93,7 @@ tar -tzf out.tar.gz            list, extract nothing
 
 #  c create    x extract    t list (table of contents)
 #  z gzip .tar.gz    j bzip2 .tar.bz2    J xz .tar.xz
-#  f FILE  — must be the LAST flag, immediately before the filename
+#  f FILE: must be the LAST flag, immediately before the filename
 #  v verbose    C DIR  change into DIR first    -p keep permissions
 
 tar -xzf archive.tar.gz -C /tmp/out              # extract somewhere else
@@ -112,7 +112,7 @@ tar -xf whatever.tar.xz
     id: 'ref-vim',
     title: 'Vim survival kit',
     description: 'Enough to escape, edit and save when git drops you into an editor',
-    command: `Esc        back to normal mode — do this first when confused
+    command: `Esc        back to normal mode: do this first when confused
 :w         save            :q    quit          :wq  or  ZZ   save and quit
 :q!        quit, discard everything            :x   save only if changed
 :e!        reload from disk, discard changes
@@ -193,11 +193,11 @@ $$   $!             PID of this shell / of the last background job`,
     id: 'ref-signals',
     title: 'Kill signals and exit codes',
     description: 'Why -9 should be the last resort, and what exit code 137 is telling you',
-    command: `kill -TERM PID    15   polite "please shut down" — the default
+    command: `kill -TERM PID    15   polite "please shut down". The default
 kill -INT  PID     2   what Ctrl-C sends
 kill -HUP  PID     1   reload config without restarting
 kill -QUIT PID     3   quit and dump core
-kill -KILL PID     9   unblockable, no cleanup, no flush — last resort
+kill -KILL PID     9   unblockable, no cleanup, no flush, last resort
 kill -STOP PID    19   freeze          kill -CONT PID  18   resume
 
 kill -l                        # every signal on this system
@@ -210,7 +210,7 @@ killall -9 "Google Chrome"
 1    general error            2    misuse of a shell builtin
 126  found but not executable 127  command not found
 130  Ctrl-C        (128 + 2 SIGINT)
-137  killed        (128 + 9 SIGKILL) — in a container this is almost always OOM
+137  killed        (128 + 9 SIGKILL): in a container this is almost always OOM
 143  terminated    (128 + 15 SIGTERM)`,
     platform: 'bash',
     tags: ['reference', 'kill', 'signals', 'process', 'debug', 'exit-codes'],
@@ -248,7 +248,7 @@ find . -type f -print0 | xargs -0 grep -l "TODO"`,
     title: 'date formatting and arithmetic',
     description: 'ISO timestamps, epoch conversion, and the macOS vs GNU differences',
     command: `date                                  # now, local time
-date -u +"%Y-%m-%dT%H:%M:%SZ"         # UTC ISO 8601 — usually the one you want
+date -u +"%Y-%m-%dT%H:%M:%SZ"         # UTC ISO 8601, usually the one you want
 date +%s                              # unix epoch seconds
 date +%F                              # 2026-08-03
 
@@ -256,7 +256,7 @@ date +%F                              # 2026-08-03
 #  %y 26     %b Aug  %B August  %a Mon %A Monday
 #  %F = %Y-%m-%d     %T = %H:%M:%S     %j day of year   %z +0000
 
-# Epoch to human — the flag differs by platform
+# Epoch to human: the flag differs by platform
 date -r 1735689600                    # macOS / BSD
 date -d @1735689600                   # GNU / Linux
 
@@ -308,8 +308,8 @@ curl -sSfL https://api.example.com/health -w "\n%{http_code} in %{time_total}s\n
                MINOR  new feature, backwards compatible
                PATCH  bug fix, backwards compatible
 
-1.2.3-beta.1   pre-release — sorts BEFORE 1.2.3
-1.2.3+build.5  build metadata — ignored when comparing versions
+1.2.3-beta.1   pre-release: sorts BEFORE 1.2.3
+1.2.3+build.5  build metadata: ignored when comparing versions
 
 # npm / node ranges
 ^1.2.3    >=1.2.3 <2.0.0     minor + patch    (npm's default when you install)
@@ -332,12 +332,12 @@ curl -sSfL https://api.example.com/health -w "\n%{http_code} in %{time_total}s\n
   {
     id: 'ref-glob',
     title: 'Glob patterns (and how .gitignore differs)',
-    description: 'Shell globs are not regex — and gitignore is not quite a shell glob either',
+    description: 'Shell globs are not regex: and gitignore is not quite a shell glob either',
     command: `*         any run of characters, but never crosses a /
 ?         exactly one character
 [abc]     one of these        [^abc] / [!abc]   none of these
 [a-z]     a range
-{a,b}     brace expansion — a bash feature, not part of globbing
+{a,b}     brace expansion: a bash feature, not part of globbing
 **        any depth  (bash needs: shopt -s globstar; zsh has it by default)
 
 ls *.txt

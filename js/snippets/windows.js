@@ -6,7 +6,7 @@ export const windows = [
   {
     id: 'win-kill-port',
     title: 'Kill the process using a port',
-    description: 'The Windows answer to "address already in use" — find the owning PID and stop it',
+    description: 'The Windows answer to "address already in use", find the owning PID and stop it',
     command: String.raw`Get-NetTCPConnection -LocalPort 3000 -State Listen |
   Select-Object -ExpandProperty OwningProcess |
   ForEach-Object { Stop-Process -Id $_ -Force }
@@ -78,7 +78,7 @@ Get-Item .\setup.ps1 -Stream Zone.Identifier -ErrorAction SilentlyContinue`,
   {
     id: 'win-grep',
     title: 'Search text inside files (grep for Windows)',
-    description: 'Select-String is PowerShell grep — pattern search with context and file lists',
+    description: 'Select-String is PowerShell grep: pattern search with context and file lists',
     command: String.raw`Select-String -Path .\*.log -Pattern 'ERROR'
 
 # Recursive, with 2 lines of context either side
@@ -111,7 +111,7 @@ Get-Content .\app.log -Tail 100`,
   {
     id: 'win-which',
     title: 'Find where a command comes from',
-    description: 'The Windows equivalent of which — resolves the real executable on PATH',
+    description: 'The Windows equivalent of which: resolves the real executable on PATH',
     command: String.raw`Get-Command node | Select-Object -ExpandProperty Source
 where.exe python              # shows every match on PATH, in order
 Get-Command git -All          # aliases, functions and executables that resolve
@@ -123,11 +123,11 @@ Get-Command *docker*          # discover what is available`,
   {
     id: 'win-env-var',
     title: 'Set an environment variable permanently',
-    description: 'Session-only vs persisted for your user — the distinction that trips everyone up',
+    description: 'Session-only vs persisted for your user: the distinction that trips everyone up',
     command: String.raw`# Current session only, gone when you close the terminal
 $env:API_KEY = 'secret'
 
-# Persisted for your user — reopen the terminal to pick it up
+# Persisted for your user: reopen the terminal to pick it up
 [Environment]::SetEnvironmentVariable('API_KEY', 'secret', 'User')
 
 # Read it back, then remove it
@@ -180,7 +180,7 @@ Get-Service | Where-Object { $_.StartType -eq 'Automatic' -and $_.Status -ne 'Ru
   {
     id: 'win-eventlog',
     title: 'Read recent errors from the Event Log',
-    description: 'Last 24 hours of system errors — where Windows hides the reason something crashed',
+    description: 'Last 24 hours of system errors: where Windows hides the reason something crashed',
     command: String.raw`Get-WinEvent -FilterHashtable @{
   LogName   = 'System'
   Level     = 2                      # 1 Critical, 2 Error, 3 Warning
@@ -232,8 +232,8 @@ certutil -hashfile .\file.exe SHA256`,
   {
     id: 'win-robocopy',
     title: 'Mirror a folder with robocopy',
-    description: 'Fast, resumable, multi-threaded folder sync — always dry run with /L first',
-    command: String.raw`# DRY RUN first — /MIR deletes files in the destination that are not in the source
+    description: 'Fast, resumable, multi-threaded folder sync, always dry run with /L first',
+    command: String.raw`# DRY RUN first: /MIR deletes files in the destination that are not in the source
 robocopy "D:\projects" "E:\backup\projects" /MIR /L
 
 # Real run: 16 threads, 1 retry, skip noisy folders, quiet output
@@ -371,7 +371,7 @@ Invoke-WebRequest -Uri https://example.com/file.zip -OutFile .\file.zip
   {
     id: 'win-top-processes',
     title: 'Top memory and CPU consuming processes',
-    description: 'Task Manager from the terminal — find what is eating the machine',
+    description: 'Task Manager from the terminal: find what is eating the machine',
     command: String.raw`Get-Process | Sort-Object WS -Descending |
   Select-Object -First 10 Name, Id, @{N='RAM(MB)';E={[math]::Round($_.WS / 1MB)}}
 
@@ -449,7 +449,7 @@ chkdsk C: /scan`,
   {
     id: 'win-scheduled-task',
     title: 'Create a scheduled task from the terminal',
-    description: 'Cron for Windows — register, inspect and remove a recurring job',
+    description: 'Cron for Windows: register, inspect and remove a recurring job',
     command: String.raw`$action  = New-ScheduledTaskAction -Execute 'pwsh.exe' -Argument '-File C:\scripts\backup.ps1'
 $trigger = New-ScheduledTaskTrigger -Daily -At 3am
 Register-ScheduledTask -TaskName 'NightlyBackup' -Action $action -Trigger $trigger -Description 'Backs up projects'
@@ -485,7 +485,7 @@ Get-AppxPackage | Select-Object Name, Version`,
   {
     id: 'win-profile',
     title: 'PowerShell profile with useful aliases',
-    description: 'Your .bashrc equivalent — aliases, functions and history-based autocomplete',
+    description: 'Your .bashrc equivalent: aliases, functions and history-based autocomplete',
     command: String.raw`$PROFILE                                   # where the file lives
 New-Item -ItemType File -Path $PROFILE -Force
 notepad $PROFILE

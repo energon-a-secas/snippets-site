@@ -4,7 +4,7 @@ export const git = [
   {
     id: 'git-undo-commit',
     title: 'Undo last commit, keep changes staged',
-    description: 'Moves HEAD back one commit but keeps all changes in the staging area — safe undo',
+    description: 'Moves HEAD back one commit but keeps all changes in the staging area, safe undo',
     command: `git reset --soft HEAD~1`,
     platform: 'bash',
     tags: ['git', 'undo', 'reset', 'commit'],
@@ -13,7 +13,7 @@ export const git = [
   {
     id: 'git-squash',
     title: 'Squash last N commits into one',
-    description: 'Combines the last 3 commits into a single commit — change the number as needed',
+    description: 'Combines the last 3 commits into a single commit, change the number as needed',
     command: `git reset --soft HEAD~3 && git commit -m "Combined commit message"`,
     platform: 'bash',
     tags: ['git', 'squash', 'rebase', 'commit', 'cleanup'],
@@ -22,7 +22,7 @@ export const git = [
   {
     id: 'git-changed-between-branches',
     title: 'Files changed between two branches',
-    description: 'Lists every file that differs between the current branch and main — useful before PRs',
+    description: 'Lists every file that differs between the current branch and main, useful before PRs',
     command: `git diff --name-only main...HEAD`,
     platform: 'bash',
     tags: ['git', 'diff', 'branches', 'files', 'pr'],
@@ -31,7 +31,7 @@ export const git = [
   {
     id: 'git-cleanup-merged',
     title: 'Delete all merged local branches',
-    description: 'Removes every local branch already merged into main — keeps main and current branch',
+    description: 'Removes every local branch already merged into main, keeps main and current branch',
     command: `git branch --merged main | grep -v "main\\|\\*" | xargs git branch -d`,
     platform: 'bash',
     tags: ['git', 'branches', 'cleanup', 'merged'],
@@ -40,7 +40,7 @@ export const git = [
   {
     id: 'git-stash-unstaged',
     title: 'Stash only unstaged changes',
-    description: 'Keeps your staged work in place and stashes everything else — perfect for partial commits',
+    description: 'Keeps your staged work in place and stashes everything else, perfect for partial commits',
     command: `git stash --keep-index`,
     platform: 'bash',
     tags: ['git', 'stash', 'staging'],
@@ -58,7 +58,7 @@ export const git = [
   {
     id: 'git-commits-per-author',
     title: 'Commits per author stats',
-    description: 'Shows how many commits each person has made — quick team activity overview',
+    description: 'Shows how many commits each person has made, quick team activity overview',
     command: `git shortlog -sn --all --no-merges`,
     platform: 'bash',
     tags: ['git', 'stats', 'authors', 'log'],
@@ -67,7 +67,7 @@ export const git = [
   {
     id: 'git-search-commits',
     title: 'Search commit messages for a keyword',
-    description: 'Finds all commits whose message contains a string — faster than scrolling through git log',
+    description: 'Finds all commits whose message contains a string, faster than scrolling through git log',
     command: `git log --all --oneline --grep="keyword"`,
     platform: 'bash',
     tags: ['git', 'search', 'log', 'commits'],
@@ -89,7 +89,7 @@ export const git = [
     command: `git bisect start
 git bisect bad          # current commit is broken
 git bisect good abc123  # this older commit was fine
-# Git checks out middle commits — test each one, then:
+# Git checks out middle commits: test each one, then:
 git bisect good   # or: git bisect bad
 # When done:
 git bisect reset`,
@@ -109,7 +109,7 @@ git bisect reset`,
   {
     id: 'git-amend-author',
     title: 'Fix the author on the last commit',
-    description: 'You committed with the wrong name or email — re-stamp the commit you just made',
+    description: 'You committed with the wrong name or email, re-stamp the commit you just made',
     command: `# Set an explicit author on the last commit
 git commit --amend --author="Luciano Adonis <luciano@example.com>" --no-edit
 
@@ -127,7 +127,7 @@ git log -1 --format='%an <%ae>  |  committer: %cn <%ce>'`,
   {
     id: 'git-amend-author-history',
     title: 'Rewrite author and email across all commits',
-    description: 'Work email leaked into a personal repo (or the reverse) — rewrite every matching commit',
+    description: 'Work email leaked into a personal repo (or the reverse), rewrite every matching commit',
     command: `# --- Preferred: git-filter-repo (brew install git-filter-repo) ---
 # Run on a fresh clone. Create mailmap.txt with one line per identity:
 #   Correct Name <correct@email>  <wrong@email>
@@ -158,7 +158,7 @@ git push --force-with-lease --tags`,
   {
     id: 'git-author-audit',
     title: 'Check which identities are in your history',
-    description: 'Run this before pushing a personal repo — catches commits made with the wrong email',
+    description: 'Run this before pushing a personal repo: catches commits made with the wrong email',
     command: `# Every distinct author in this repo
 git log --format='%an <%ae>' | sort -u
 
@@ -184,7 +184,7 @@ git commit --amend -m "feat(api): pagination on /items"
 # Last commit, open the editor instead
 git commit --amend
 
-# An older commit — mark it 'reword' in the todo list
+# An older commit: mark it 'reword' in the todo list
 git rebase -i HEAD~5
 
 # Already pushed? force-with-lease refuses if someone else pushed meanwhile
@@ -196,7 +196,7 @@ git push --force-with-lease`,
   {
     id: 'git-wrong-branch',
     title: 'Move commits made on the wrong branch',
-    description: 'You committed to main instead of a feature branch — rescue the work without losing it',
+    description: 'You committed to main instead of a feature branch, rescue the work without losing it',
     command: `# Not pushed yet: bookmark the commits, then rewind main
 git branch feature/my-work        # feature/my-work now points at your commits
 git reset --hard origin/main      # main back to where the remote is
@@ -205,7 +205,7 @@ git switch feature/my-work        # your work is safe here
 # Keep the changes as uncommitted edits instead
 git reset --soft HEAD~3
 
-# Already pushed to a shared main? Do not rewrite — revert forward
+# Already pushed to a shared main? Do not rewrite: revert forward
 git revert --no-commit HEAD~3..HEAD
 git commit -m "revert: move work to feature branch"`,
     platform: 'bash',
@@ -215,7 +215,7 @@ git commit -m "revert: move work to feature branch"`,
   {
     id: 'git-reflog-recover',
     title: 'Recover a lost commit or branch',
-    description: 'Git almost never really deletes anything — reflog is the undo history for HEAD',
+    description: 'Git almost never really deletes anything: reflog is the undo history for HEAD',
     command: `# Every position HEAD has been in (kept ~90 days)
 git reflog
 
@@ -237,7 +237,7 @@ git fsck --lost-found`,
   {
     id: 'git-untrack-file',
     title: 'Stop tracking a file you already committed',
-    description: 'Added .env or node_modules by accident — untrack it without deleting it from disk',
+    description: 'Added .env or node_modules by accident: untrack it without deleting it from disk',
     command: `echo ".env" >> .gitignore
 git rm --cached .env                  # untrack, keep the file on disk
 git rm -r --cached node_modules
@@ -256,7 +256,7 @@ git filter-repo --path .env --invert-paths
   {
     id: 'git-undo-pushed',
     title: 'Undo a commit that is already pushed',
-    description: 'Shared branch vs your own branch — two different answers, do not mix them up',
+    description: 'Shared branch vs your own branch: two different answers, do not mix them up',
     command: `# Shared branch: never rewrite. Add an inverse commit.
 git revert abc1234
 git revert -m 1 MERGE_SHA             # reverting a merge picks a parent
@@ -362,7 +362,7 @@ git push origin :old-name new-name`,
   {
     id: 'git-clean-untracked',
     title: 'Delete untracked files safely',
-    description: 'git clean is irreversible — the dry run is not optional',
+    description: 'git clean is irreversible: the dry run is not optional',
     command: `git clean -nd            # DRY RUN. Always run this first.
 git clean -fd            # delete untracked files and directories
 git clean -fdx           # also delete ignored files (node_modules, .env, dist)

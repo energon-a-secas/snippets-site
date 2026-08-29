@@ -49,7 +49,7 @@ export const macos = [
   {
     id: 'sips-resize',
     title: 'Batch resize images with sips',
-    description: 'Resizes all PNGs in the current directory to a max width of 800px — no ImageMagick needed',
+    description: 'Resizes all PNGs in the current directory to a max width of 800px. No ImageMagick needed',
     command: `for f in *.png; do sips --resampleWidth 800 "$f"; done`,
     platform: 'macOS',
     tags: ['macos', 'images', 'resize', 'sips', 'bulk'],
@@ -76,7 +76,7 @@ export const macos = [
   {
     id: 'say-text',
     title: 'Text-to-speech from terminal',
-    description: 'Reads text aloud using the macOS speech synthesizer — great for long-running task notifications',
+    description: 'Reads text aloud using the macOS speech synthesizer, great for long-running task notifications',
     command: `say "Build complete"`,
     platform: 'macOS',
     tags: ['macos', 'tts', 'speech', 'notification'],
@@ -94,7 +94,7 @@ export const macos = [
   {
     id: 'macos-screenshot-window',
     title: 'Screenshot a specific window to file',
-    description: 'Takes a screenshot of the front window with shadow — press Space after running to select',
+    description: 'Takes a screenshot of the front window with shadow, press Space after running to select',
     command: `screencapture -W screenshot.png`,
     platform: 'macOS',
     tags: ['macos', 'screenshot', 'capture'],
@@ -172,7 +172,7 @@ defaults delete com.apple.screencapture disable-shadow`,
   {
     id: 'macos-dock-defaults',
     title: 'Make the Dock instant',
-    description: 'Removes the autohide animation delay — the single best macOS tweak',
+    description: 'Removes the autohide animation delay: the single best macOS tweak',
     command: `defaults write com.apple.dock autohide-delay -float 0
 defaults write com.apple.dock autohide-time-modifier -float 0.15
 defaults write com.apple.dock show-recents -bool false
@@ -206,7 +206,7 @@ defaults write -g NSAutomaticDashSubstitutionEnabled -bool false
   {
     id: 'macos-wifi-info',
     title: 'Wi-Fi details and signal from the terminal',
-    description: 'The old airport binary was removed in macOS 14.4 — these still work',
+    description: 'The old airport binary was removed in macOS 14.4. These still work',
     command: `# Full Wi-Fi picture: SSID, channel, signal, security
 system_profiler SPAirPortDataType
 
@@ -262,7 +262,7 @@ sudo pmset -b disablesleep 0`,
   {
     id: 'macos-system-profiler',
     title: 'Hardware and software inventory',
-    description: 'Serial number, chip, RAM, macOS build — everything you need for a support ticket',
+    description: 'Serial number, chip, RAM, macOS build: everything you need for a support ticket',
     command: `system_profiler SPHardwareDataType     # model, chip, RAM, serial
 system_profiler SPSoftwareDataType     # macOS version, build, uptime
 system_profiler SPStorageDataType
@@ -320,7 +320,7 @@ duti -x pdf`,
   {
     id: 'macos-restart-ui',
     title: 'Restart Finder, Dock and the menu bar',
-    description: 'First response when the UI wedges — much faster than rebooting',
+    description: 'First response when the UI wedges: much faster than rebooting',
     command: `killall Finder
 killall Dock
 killall SystemUIServer              # menu bar and status icons

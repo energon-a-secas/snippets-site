@@ -32,7 +32,7 @@ Curated shell commands and code snippets. Search and copy, skip the chat.
 
 255 curated commands for bash, macOS, Windows PowerShell, Git, data extraction, text processing, media tooling, Docker, Kubernetes and Claude Code. Search across every field, filter by category, platform or tag, pin the ones you reach for, and copy in one click.
 
-Built for the moment you know the command exists but not its exact flags — faster than a search engine, and it never invents a flag that does not exist.
+Built for the moment you know the command exists but not its exact flags, faster than a search engine, and it never invents a flag that does not exist.
 
 **Live:** snippets.neorgon.com
 
@@ -93,7 +93,7 @@ Append to the matching `js/snippets/<category>.js` array:
 ```
 
 `id` must be unique across every module. Use `` String.raw`…` `` for any command
-containing backslashes (Windows paths, regex classes, line continuations) — a plain
+containing backslashes (Windows paths, regex classes, line continuations). A plain
 template literal silently eats them. Use a normal template with `\${` for bash
 parameter expansion, since `String.raw` still interpolates `${`.
 

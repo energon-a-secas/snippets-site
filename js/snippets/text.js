@@ -58,7 +58,7 @@ export const text = [
   {
     id: 'word-frequency',
     title: 'Count word frequency in a file',
-    description: 'Lists every word and how many times it appears — sorted by count descending',
+    description: 'Lists every word and how many times it appears, sorted by count descending',
     command: `tr -cs 'A-Za-z' '\\n' < file.txt | tr 'A-Z' 'a-z' | sort | uniq -c | sort -rn | head -30`,
     platform: 'bash',
     tags: ['text', 'frequency', 'count', 'words', 'analysis'],
@@ -89,7 +89,7 @@ python3 -m json.tool data.json`,
   {
     id: 'tabs-to-spaces',
     title: 'Convert tabs to spaces across files',
-    description: 'Replaces all tabs with 2 spaces in every matching file — adjustable width',
+    description: 'Replaces all tabs with 2 spaces in every matching file, adjustable width',
     command: `find . -name "*.py" -exec sed -i '' 's/\\t/  /g' {} +`,
     platform: 'macOS',
     tags: ['sed', 'tabs', 'spaces', 'format', 'macos'],

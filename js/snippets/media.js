@@ -4,7 +4,7 @@ export const media = [
   {
     id: 'ffmpeg-trim',
     title: 'Trim a video without re-encoding',
-    description: 'Cut a section out in seconds — copying streams instead of re-encoding is near-instant',
+    description: 'Cut a section out in seconds: copying streams instead of re-encoding is near-instant',
     command: `# 30 seconds starting at 1m15s, no quality loss, no waiting
 ffmpeg -ss 00:01:15 -i input.mp4 -t 30 -c copy out.mp4
 
@@ -23,7 +23,7 @@ ffmpeg -i input.mp4 -ss 00:01:15 -to 00:01:45 -c:v libx264 -crf 18 out.mp4`,
     description: 'CRF is the quality dial: 18 near-lossless, 23 default, 28 small. Higher = smaller',
     command: `ffmpeg -i input.mp4 -c:v libx264 -crf 28 -preset slow -c:a aac -b:a 128k out.mp4
 
-# Also cap the resolution — usually the biggest win
+# Also cap the resolution: usually the biggest win
 ffmpeg -i input.mp4 -vf "scale=-2:720" -c:v libx264 -crf 26 -c:a aac out.mp4
 
 # Modern codec, roughly 30% smaller at the same quality
@@ -39,7 +39,7 @@ ls -lh input.mp4 out.mp4`,
     id: 'ffmpeg-extract-audio',
     title: 'Extract audio from a video',
     description: 'Keep the original audio stream, or transcode it to mp3',
-    command: `# Copy the existing audio stream — instant, no quality loss
+    command: `# Copy the existing audio stream: instant, no quality loss
 ffmpeg -i video.mp4 -vn -c:a copy audio.m4a
 
 # Transcode to mp3 (-q:a 2 is roughly 190kbps VBR)
@@ -57,7 +57,7 @@ ffprobe -v error -select_streams a -show_entries stream=index,codec_name -of csv
   {
     id: 'ffmpeg-to-gif',
     title: 'Video to a GIF that does not look terrible',
-    description: 'The two-pass palette trick — one-pass GIFs come out banded and huge',
+    description: 'The two-pass palette trick: one-pass GIFs come out banded and huge',
     command: `# Pass 1: build an optimal 256-colour palette
 ffmpeg -i clip.mp4 -vf "fps=15,scale=720:-1:flags=lanczos,palettegen" -y palette.png
 
@@ -79,7 +79,7 @@ ffmpeg -i clip.mp4 -vf "fps=10,scale=480:-1" -y small.gif`,
 ffmpeg -i input.webm -c:v libx264 -c:a aac out.mp4
 ffmpeg -i input.mp4 -c:v libvpx-vp9 -crf 32 -b:v 0 out.webm
 
-# Same codecs, different container — instant, lossless
+# Same codecs, different container: instant, lossless
 ffmpeg -i input.mkv -c copy out.mp4
 
 # Batch a whole folder
@@ -131,7 +131,7 @@ ffmpeg -ss 00:00:05 -i video.mp4 -frames:v 1 -q:v 2 thumb.jpg
 # A frame every 10 seconds
 ffmpeg -i video.mp4 -vf fps=1/10 frame_%04d.png
 
-# Every scene change — good for finding chapters
+# Every scene change: good for finding chapters
 ffmpeg -i video.mp4 -vf "select=gt(scene\,0.4)" -vsync vfr scene_%03d.png`,
     platform: 'bash',
     tags: ['ffmpeg', 'video', 'screenshot', 'images', 'media'],
@@ -157,7 +157,7 @@ ffmpeg -i in.mp3 -af "afade=t=in:d=2,afade=t=out:st=57:d=3" out.mp3`,
   {
     id: 'ffmpeg-speed',
     title: 'Speed up or slow down a video',
-    description: 'setpts handles video, atempo handles audio — change both or they desync',
+    description: 'setpts handles video, atempo handles audio, change both or they desync',
     command: `# 2x faster
 ffmpeg -i in.mp4 -vf "setpts=0.5*PTS" -af "atempo=2.0" fast.mp4
 
@@ -167,7 +167,7 @@ ffmpeg -i in.mp4 -vf "setpts=2.0*PTS" -af "atempo=0.5" slow.mp4
 # Silent timelapse at 4x
 ffmpeg -i in.mp4 -an -vf "setpts=0.25*PTS" timelapse.mp4
 
-# atempo only accepts 0.5-2.0 — chain it for more
+# atempo only accepts 0.5-2.0: chain it for more
 ffmpeg -i in.mp4 -vf "setpts=0.25*PTS" -af "atempo=2.0,atempo=2.0" faster.mp4`,
     platform: 'bash',
     tags: ['ffmpeg', 'video', 'speed', 'media'],
@@ -203,7 +203,7 @@ magick input.jpg -resize 50% half.jpg
 # Whole folder: resize to 1200px wide and convert to jpg
 magick mogrify -resize 1200x -format jpg *.png
 
-# Exact size, cropped from the centre — how OG images get made
+# Exact size, cropped from the centre: how OG images get made
 magick input.png -resize 1200x630^ -gravity center -extent 1200x630 og.jpg
 
 # ImageMagick 6 uses "convert" instead of "magick"
@@ -215,7 +215,7 @@ convert input.png -resize 800x800 output.png`,
   {
     id: 'imagemagick-optimize',
     title: 'Compress images for the web',
-    description: 'Strip metadata and tune quality — usually 60-80% smaller with no visible difference',
+    description: 'Strip metadata and tune quality: usually 60-80% smaller with no visible difference',
     command: `magick input.jpg -strip -quality 82 -sampling-factor 4:2:0 -interlace JPEG out.jpg
 magick input.png -strip -define png:compression-level=9 out.png
 
@@ -286,7 +286,7 @@ qpdf input.pdf --rotate=+90:2-5 -- rotated.pdf`,
   {
     id: 'pdf-compress',
     title: 'Shrink a PDF that is too big to email',
-    description: 'PDFSETTINGS picks the quality preset — /ebook is the usual sweet spot',
+    description: 'PDFSETTINGS picks the quality preset: /ebook is the usual sweet spot',
     command: `gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook \\
    -dNOPAUSE -dQUIET -dBATCH -sOutputFile=small.pdf input.pdf
 
@@ -382,7 +382,7 @@ Get-FileHash .\ubuntu.iso -Algorithm SHA256`,
   {
     id: 'exif-strip',
     title: 'Strip metadata from photos before sharing',
-    description: 'Photos carry GPS coordinates, device serials and timestamps — remove them',
+    description: 'Photos carry GPS coordinates, device serials and timestamps, remove them',
     command: `# What is actually in there?
 exiftool photo.jpg
 exiftool -gps:all photo.jpg

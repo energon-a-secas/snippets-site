@@ -40,7 +40,7 @@ export const shell = [
   {
     id: 'kill-port',
     title: 'Kill process using a specific port',
-    description: 'Finds and kills whatever is occupying a port — no more "address already in use"',
+    description: 'Finds and kills whatever is occupying a port. No more "address already in use"',
     command: `lsof -ti :PORT | xargs kill -9`,
     platform: 'bash',
     tags: ['bash', 'process', 'kill', 'ports', 'network'],
@@ -76,7 +76,7 @@ export const shell = [
   {
     id: 'diff-directories',
     title: 'Compare two directories for differences',
-    description: 'Shows files that differ or exist only in one directory — great for deploy diffs',
+    description: 'Shows files that differ or exist only in one directory, great for deploy diffs',
     command: `diff -rq dir1/ dir2/ | sort`,
     platform: 'bash',
     tags: ['bash', 'diff', 'files', 'compare'],
@@ -103,7 +103,7 @@ export const shell = [
   {
     id: 'http-server-quick',
     title: 'One-liner HTTP server (any language)',
-    description: 'Serve the current directory over HTTP — pick whichever runtime you have',
+    description: 'Serve the current directory over HTTP: pick whichever runtime you have',
     command: `# Python 3
 python3 -m http.server 8000
 
@@ -122,7 +122,7 @@ php -S localhost:8000`,
   {
     id: 'repeat-until-fail',
     title: 'Run a command until it fails',
-    description: 'Repeats a flaky command until it exits non-zero — useful for finding intermittent test failures',
+    description: 'Repeats a flaky command until it exits non-zero, useful for finding intermittent test failures',
     command: `while true; do YOUR_COMMAND || { echo "Failed on attempt $n"; break; }; ((n++)); done`,
     platform: 'bash',
     tags: ['bash', 'loop', 'test', 'debug', 'flaky'],

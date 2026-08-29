@@ -13,7 +13,7 @@ export const k8s = [
   {
     id: 'k8s-events-recent',
     title: 'Recent cluster events sorted by time',
-    description: 'Shows the last 30 cluster events — fastest way to spot scheduling failures, OOM kills, and pull errors',
+    description: 'Shows the last 30 cluster events: fastest way to spot scheduling failures, OOM kills, and pull errors',
     command: `kubectl get events -A --sort-by='.lastTimestamp' | tail -30`,
     platform: 'bash',
     tags: ['k8s', 'events', 'debug', 'cluster'],
@@ -22,7 +22,7 @@ export const k8s = [
   {
     id: 'k8s-crash-logs',
     title: 'Get logs from a crashed/restarting pod',
-    description: 'Fetches logs from the previous container instance — essential for CrashLoopBackOff debugging',
+    description: 'Fetches logs from the previous container instance, essential for CrashLoopBackOff debugging',
     command: `kubectl logs POD_NAME --previous -n NAMESPACE`,
     platform: 'bash',
     tags: ['k8s', 'logs', 'crash', 'debug'],
@@ -31,7 +31,7 @@ export const k8s = [
   {
     id: 'k8s-resource-usage',
     title: 'Node resource usage (CPU & memory)',
-    description: 'Shows actual vs allocatable resources per node — find overcommitted nodes instantly',
+    description: 'Shows actual vs allocatable resources per node, find overcommitted nodes instantly',
     command: `kubectl top nodes --sort-by=cpu`,
     platform: 'bash',
     tags: ['k8s', 'nodes', 'cpu', 'memory', 'monitoring'],
@@ -40,7 +40,7 @@ export const k8s = [
   {
     id: 'k8s-pod-resources',
     title: 'Top resource-consuming pods',
-    description: 'Ranks pods by CPU usage across all namespaces — find the noisy neighbors',
+    description: 'Ranks pods by CPU usage across all namespaces, find the noisy neighbors',
     command: `kubectl top pods -A --sort-by=cpu | head -20`,
     platform: 'bash',
     tags: ['k8s', 'pods', 'cpu', 'monitoring', 'resources'],
@@ -59,7 +59,7 @@ export const k8s = [
   {
     id: 'k8s-secret-decode',
     title: 'Decode a Kubernetes secret',
-    description: 'Extracts and base64-decodes a secret value — no more piping through base64 manually',
+    description: 'Extracts and base64-decodes a secret value. No more piping through base64 manually',
     command: `kubectl get secret SECRET_NAME -n NAMESPACE -o jsonpath='{.data.password}' | base64 -d`,
     platform: 'bash',
     tags: ['k8s', 'secrets', 'decode', 'extract'],
@@ -77,7 +77,7 @@ export const k8s = [
   {
     id: 'k8s-all-images',
     title: 'List all container images in the cluster',
-    description: 'Extracts every unique image:tag running across all pods — useful for audits and CVE checks',
+    description: 'Extracts every unique image:tag running across all pods, useful for audits and CVE checks',
     command: `kubectl get pods -A -o jsonpath='{range .items[*]}{range .spec.containers[*]}{.image}{"\\n"}{end}{end}' | sort -u`,
     platform: 'bash',
     tags: ['k8s', 'images', 'audit', 'security'],
@@ -86,7 +86,7 @@ export const k8s = [
   {
     id: 'k8s-port-forward',
     title: 'Port-forward to a pod or service',
-    description: 'Exposes a pod or service port to your local machine — access remote services at localhost',
+    description: 'Exposes a pod or service port to your local machine, access remote services at localhost',
     command: `kubectl port-forward svc/SERVICE_NAME 8080:80 -n NAMESPACE`,
     platform: 'bash',
     tags: ['k8s', 'port-forward', 'networking', 'debug', 'service'],
@@ -108,7 +108,7 @@ kubectl cp NAMESPACE/POD_NAME:/app/logs/error.log ./error.log`,
   {
     id: 'k8s-pods-by-label',
     title: 'Get pods by label selector',
-    description: 'Filters pods using label queries — essential for microservice debugging',
+    description: 'Filters pods using label queries: essential for microservice debugging',
     command: `kubectl get pods -n NAMESPACE -l app=my-service,env=production -o wide`,
     platform: 'bash',
     tags: ['k8s', 'pods', 'labels', 'selector', 'filter'],
@@ -117,7 +117,7 @@ kubectl cp NAMESPACE/POD_NAME:/app/logs/error.log ./error.log`,
   {
     id: 'k8s-exec-into-pod',
     title: 'Shell into a running pod',
-    description: 'Opens an interactive shell inside a pod — falls back to sh if bash is unavailable',
+    description: 'Opens an interactive shell inside a pod: falls back to sh if bash is unavailable',
     command: `kubectl exec -it POD_NAME -n NAMESPACE -- bash || kubectl exec -it POD_NAME -n NAMESPACE -- sh`,
     platform: 'bash',
     tags: ['k8s', 'exec', 'shell', 'debug'],

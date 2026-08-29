@@ -49,7 +49,7 @@ export const data = [
   {
     id: 'csv-to-json',
     title: 'Convert CSV to JSON',
-    description: 'Turns a CSV file into a JSON array of objects using only Python stdlib — no pandas needed',
+    description: 'Turns a CSV file into a JSON array of objects using only Python stdlib. No pandas needed',
     command: `python3 -c "
 import csv, json, sys
 with open('data.csv') as f:
@@ -71,7 +71,7 @@ with open('data.csv') as f:
   {
     id: 'merge-csvs',
     title: 'Merge multiple CSVs with same headers',
-    description: 'Concatenates CSV files keeping only one header row — works with any number of files',
+    description: 'Concatenates CSV files keeping only one header row, works with any number of files',
     command: `head -1 file1.csv > merged.csv && tail -n +2 -q *.csv >> merged.csv`,
     platform: 'bash',
     tags: ['csv', 'merge', 'concatenate', 'data'],
@@ -80,7 +80,7 @@ with open('data.csv') as f:
   {
     id: 'jq-nested-extract',
     title: 'Extract nested JSON values with jq',
-    description: 'Drills into nested JSON arrays and objects — outputs flat TSV for easy piping',
+    description: 'Drills into nested JSON arrays and objects, outputs flat TSV for easy piping',
     command: `cat data.json | jq -r '.items[] | [.id, .metadata.name, .status.phase] | @tsv'`,
     platform: 'bash',
     tags: ['json', 'jq', 'nested', 'extract', 'data'],
@@ -89,7 +89,7 @@ with open('data.csv') as f:
   {
     id: 'xml-to-json',
     title: 'Convert XML to JSON',
-    description: 'Quick XML-to-JSON conversion using Python xmltodict — install with pip if missing',
+    description: 'Quick XML-to-JSON conversion using Python xmltodict, install with pip if missing',
     command: `python3 -c "
 import xmltodict, json, sys
 with open('data.xml') as f:
@@ -134,7 +134,7 @@ cat data.json | jq '.[] | {name, full: (.first + " " + .last)}'`,
   {
     id: 'jq-group-count',
     title: 'jq: group by and count',
-    description: 'Groups JSON array items by a field and counts occurrences — the SQL GROUP BY of jq',
+    description: 'Groups JSON array items by a field and counts occurrences. The SQL GROUP BY of jq',
     command: `cat data.json | jq 'group_by(.status) | map({status: .[0].status, count: length})'`,
     platform: 'bash',
     tags: ['jq', 'json', 'group', 'count', 'aggregate', 'data'],
@@ -175,7 +175,7 @@ cat data.json | jq '.. | .id? // empty'`,
   {
     id: 'jq-update-in-place',
     title: 'jq: modify values in a JSON file',
-    description: 'Update specific fields and write back — jq has no in-place flag so pipe through sponge or a temp file',
+    description: 'Update specific fields and write back: jq has no in-place flag so pipe through sponge or a temp file',
     command: `# Update a field
 jq '.version = "2.0.0"' package.json > tmp.json && mv tmp.json package.json
 
@@ -191,7 +191,7 @@ jq '.tags += ["new-tag"]' data.json > tmp.json && mv tmp.json data.json`,
   {
     id: 'yq-read-value',
     title: 'yq: read values from YAML',
-    description: 'Extract specific values from YAML files — same dot-path syntax as jq',
+    description: 'Extract specific values from YAML files: same dot-path syntax as jq',
     command: `# Read a value
 yq '.metadata.name' deployment.yaml
 
@@ -207,7 +207,7 @@ yq '.spec.containers[].image' pod.yaml`,
   {
     id: 'yq-edit-yaml',
     title: 'yq: edit YAML files in place',
-    description: 'Modify YAML values without breaking formatting or comments — essential for CI/CD pipelines',
+    description: 'Modify YAML values without breaking formatting or comments, essential for CI/CD pipelines',
     command: `# Update a value in place
 yq -i '.spec.replicas = 3' deployment.yaml
 
@@ -226,7 +226,7 @@ yq -i 'del(.metadata.annotations)' deployment.yaml`,
   {
     id: 'yq-convert-formats',
     title: 'yq: convert between YAML, JSON, and XML',
-    description: 'Translate between formats using yq — handy for piping YAML into jq or generating configs',
+    description: 'Translate between formats using yq: handy for piping YAML into jq or generating configs',
     command: `# YAML to JSON
 yq -o=json deployment.yaml
 
@@ -245,7 +245,7 @@ yq -o=json -s '.' multi-doc.yaml`,
   {
     id: 'yq-merge-yamls',
     title: 'yq: merge multiple YAML files',
-    description: 'Combine base and overlay YAML files — like Kustomize but simpler',
+    description: 'Combine base and overlay YAML files: like Kustomize but simpler',
     command: `# Merge overlay into base (overlay wins)
 yq '. *= load("overlay.yaml")' base.yaml
 

@@ -28,7 +28,7 @@ export const docker = [
   {
     id: 'docker-ephemeral-debug',
     title: 'Attach a debug sidecar to a running container',
-    description: 'Starts a temporary container sharing the network and PID namespace of a running one — full toolkit without modifying the original',
+    description: 'Starts a temporary container sharing the network and PID namespace of a running one, full toolkit without modifying the original',
     command: `docker run -it --rm \\
   --network container:TARGET_CONTAINER \\
   --pid container:TARGET_CONTAINER \\
@@ -58,7 +58,7 @@ export const docker = [
   {
     id: 'docker-stats-oneliner',
     title: 'Live container resource usage (sorted)',
-    description: 'Shows CPU, memory, network I/O for all running containers — refreshes live',
+    description: 'Shows CPU, memory, network I/O for all running containers, refreshes live',
     command: `docker stats --format "table {{.Name}}\\t{{.CPUPerc}}\\t{{.MemUsage}}\\t{{.NetIO}}\\t{{.PIDs}}"`,
     platform: 'bash',
     tags: ['docker', 'monitoring', 'cpu', 'memory', 'stats'],
@@ -67,7 +67,7 @@ export const docker = [
   {
     id: 'docker-log-since',
     title: 'Tail container logs with timestamp filter',
-    description: 'Shows only logs from the last hour with timestamps — useful for incident triage',
+    description: 'Shows only logs from the last hour with timestamps, useful for incident triage',
     command: `docker logs --since 1h --timestamps CONTAINER_NAME 2>&1 | tail -100`,
     platform: 'bash',
     tags: ['docker', 'logs', 'debug', 'timestamps'],
@@ -94,7 +94,7 @@ export const docker = [
   {
     id: 'docker-exec-root',
     title: 'Enter a container as root',
-    description: 'Shells into a running container with root privileges — useful when the default user has no permissions',
+    description: 'Shells into a running container with root privileges, useful when the default user has no permissions',
     command: `docker exec -it --user root CONTAINER_NAME bash`,
     platform: 'bash',
     tags: ['docker', 'exec', 'root', 'debug', 'shell'],
@@ -112,7 +112,7 @@ export const docker = [
   {
     id: 'docker-image-layers',
     title: 'Show image layer sizes',
-    description: 'Lists every layer in an image with its size — find what is making your image fat',
+    description: 'Lists every layer in an image with its size, find what is making your image fat',
     command: `docker history --human --no-trunc IMAGE_NAME`,
     platform: 'bash',
     tags: ['docker', 'images', 'layers', 'size', 'optimize'],
